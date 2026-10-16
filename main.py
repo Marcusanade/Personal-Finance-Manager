@@ -6,12 +6,18 @@ from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
 from transaction.external_income_transaction import ExternalFreelanceIncome
+from command.transaction_command import ApplyTransactionCommand, TransactionHistory
 
 
 def main():
-    print("Adding transactions...")
-   
-    # TODO: Create balance and add observers
+    print("=== Personal Finance Manager ===\n")
+
+    balance = Balance.get_instance()
+    balance.reset()
+    balance.register_observer(PrintObserver())
+    balance.register_observer(LowBalanceAlertObserver(threshold=200))
+
+    history = TransactionHistory()
 
     # Create standard transactions
     transactions = [
@@ -28,7 +34,19 @@ def main():
 
     all_transactions = transactions + [adapted_transaction]
 
-    # TODO: Apply all transactions to balance
+    print("--- Applying transactions ---")
+    for t in all_transactions:
+        history.execute(ApplyTransactionCommand(balance, t))
+
+    print(f"\n{balance.summary()}")
+
+    print("\n--- Undoing last transaction ---")
+    history.undo()
+    print(balance.summary())
+
+    print("\n--- Redoing last transaction ---")
+    history.redo()
+    print(balance.summary())
 
 if __name__ == "__main__":
     main()
