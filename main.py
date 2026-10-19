@@ -6,7 +6,9 @@ from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 from transaction.transaction_adapter import TransactionAdapter
 from transaction.external_income_transaction import ExternalFreelanceIncome
-from command.transaction_command import ApplyTransactionCommand, TransactionHistory
+from command.transaction_command import (
+    ApplyTransactionCommand, TransactionHistory
+)
 
 
 def main():
@@ -19,7 +21,6 @@ def main():
 
     history = TransactionHistory()
 
-    # Create standard transactions
     transactions = [
         Transaction(100, TransactionCategory.INCOME),
         Transaction(50, TransactionCategory.EXPENSE),
@@ -27,8 +28,9 @@ def main():
         Transaction(75, TransactionCategory.EXPENSE),
     ]
 
-    # Create an external income transaction (via Adapter pattern)
-    freelance_income = ExternalFreelanceIncome(1200, "INV-98765", "Mobile App Project")
+    freelance_income = ExternalFreelanceIncome(
+        1200, "INV-98765", "Mobile App Project"
+    )
     adapter = TransactionAdapter(freelance_income)
     adapted_transaction = adapter.to_transaction()
 
@@ -47,6 +49,7 @@ def main():
     print("\n--- Redoing last transaction ---")
     history.redo()
     print(balance.summary())
+
 
 if __name__ == "__main__":
     main()

@@ -3,6 +3,7 @@ from balance.balance import Balance
 from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
 
+
 class TestBalance(unittest.TestCase):
 
     def setUp(self):
@@ -47,6 +48,20 @@ class TestBalance(unittest.TestCase):
         self.balance.add_expense(50)
         self.balance.reset()
         self.assertEqual(self.balance.get_balance(), 0.0)
+
+    def test_direct_construction_shares_instance(self):
+        shared = Balance.get_instance()
+        self.assertIs(Balance(), shared)
+
+    def test_existing_funds_preserved_after_get_instance(self):
+        self.balance.add_income(500)
+        same_balance = Balance.get_instance()
+        self.assertEqual(same_balance.get_balance(), 500)
+
+    def test_existing_funds_preserved_after_direct_construction(self):
+        self.balance.add_income(300)
+        self.assertEqual(Balance().get_balance(), 300)
+
 
 if __name__ == "__main__":
     unittest.main()

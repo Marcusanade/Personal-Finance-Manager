@@ -2,7 +2,9 @@ import unittest
 from balance.balance import Balance
 from transaction.transaction import Transaction
 from transaction.transaction_category import TransactionCategory
-from command.transaction_command import ApplyTransactionCommand, TransactionHistory
+from command.transaction_command import (
+    ApplyTransactionCommand, TransactionHistory
+)
 
 
 class TestCommandPattern(unittest.TestCase):
@@ -37,8 +39,10 @@ class TestCommandPattern(unittest.TestCase):
         self.assertEqual(self.balance.get_balance(), 200)
 
     def test_multiple_undo(self):
-        self.history.execute(ApplyTransactionCommand(self.balance, Transaction(100, TransactionCategory.INCOME)))
-        self.history.execute(ApplyTransactionCommand(self.balance, Transaction(40, TransactionCategory.EXPENSE)))
+        t1 = Transaction(100, TransactionCategory.INCOME)
+        t2 = Transaction(40, TransactionCategory.EXPENSE)
+        self.history.execute(ApplyTransactionCommand(self.balance, t1))
+        self.history.execute(ApplyTransactionCommand(self.balance, t2))
         self.assertEqual(self.balance.get_balance(), 60)
         self.history.undo()
         self.assertEqual(self.balance.get_balance(), 100)
